@@ -160,13 +160,27 @@ def cmd_article(article_id):
         print(_attachment_text(att))
 
 
+def cmd_requester(ticket_id):
+    """Print only the requester's email/name and the ticket status (works for agents and contacts)."""
+    if not str(ticket_id).isdigit():
+        sys.exit("ERROR: ticket id must be a number.")
+    t = _get(f"https://{DOMAIN}/api/v2/tickets/{ticket_id}?include=requester")
+    r = t.get("requester") or {}
+    print(f"requester_email: {(r.get('email') or '').strip().lower() or '(none)'}")
+    print(f"requester_name: {r.get('name') or '(none)'}")
+    print(f"status: {t.get('status')}")
+
+
 def main():
-    if len(sys.argv) < 3 or sys.argv[1] not in ("search", "article"):
-        sys.exit('Usage: python3 kb.py search "<keywords>"  |  python3 kb.py article <id>')
+    cmds = ("search", "article", "requester")
+    if len(sys.argv) < 3 or sys.argv[1] not in cmds:
+        sys.exit('Usage: python3 kb.py search "<keywords>" | article <id> | requester <ticket_id>')
     if sys.argv[1] == "search":
         cmd_search(" ".join(sys.argv[2:]))
-    else:
+    elif sys.argv[1] == "article":
         cmd_article(sys.argv[2])
+    else:
+        cmd_requester(sys.argv[2])
 
 
 if __name__ == "__main__":
