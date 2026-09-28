@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "freshdesk": {
+      "command": "sh",
+      "args": ["-c", "[ -f dist/index.js ] || (npm ci && npm run build) >&2; exec node dist/index.js"],
+      "env": {
+        "FRESHDESK_DOMAIN": "${FRESHDESK_DOMAIN}",
+        "FRESHDESK_API_KEY": "${FRESHDESK_API_KEY}"
+      }
+    }
+  }
+}
+C
