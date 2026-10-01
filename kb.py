@@ -180,7 +180,7 @@ def _requester_email(t):
 
 
 def _allowed(email):
-    raw = os.environ.get("ALLOWED_REQUESTERS", "jbruce@namb.net")
+    raw = os.environ.get("ALLOWED_REQUESTERS", "jbruce@namb.net,kguillen@namb.net")
     for entry in (e.strip().lower() for e in raw.split(",") if e.strip()):
         if entry.startswith("@") and email.endswith(entry):
             return True
