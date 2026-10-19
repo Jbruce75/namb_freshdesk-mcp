@@ -10,8 +10,10 @@ nothing breaks when the MCP server renames its tools.
   python3 kb.py reply 1084039 reply.html  -> send reply.html as the public reply
 
 Safety checks built into `reply` (the script refuses, whatever the caller says):
-  - requester email must be in ALLOWED_REQUESTERS (env var, comma-separated;
-    default jbruce@namb.net; an entry starting with "@" allows a whole domain)
+  - requester email must be allowed: listed in allowed_requesters.txt (next to
+    this script; one address per line, "@domain" allows a whole domain), or
+    in the ALLOWED_REQUESTERS env var (comma-separated) if that's set, which
+    takes precedence over the file
   - ticket status must be Open (2)
   - the ticket must not already have a public agent reply (no double replies)
   - the body must be real HTML, not escaped or markdown
@@ -179,9 +181,24 @@ def _requester_email(t):
     return ((t.get("requester") or {}).get("email") or "").strip().lower()
 
 
+def _allowed_entries():
+    raw = os.environ.get("ALLOWED_REQUESTERS")
+    if raw is not None:
+        return [e.strip().lower() for e in raw.split(",") if e.strip()]
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "allowed_requesters.txt")
+    try:
+        with open(path, encoding="utf-8") as f:
+            return [
+                line.strip().lower()
+                for line in f
+                if line.strip() and not line.strip().startswith("#")
+            ]
+    except FileNotFoundError:
+        return ["jbruce@namb.net", "kguillen@namb.net"]
+
+
 def _allowed(email):
-    raw = os.environ.get("ALLOWED_REQUESTERS", "jbruce@namb.net,kguillen@namb.net")
-    for entry in (e.strip().lower() for e in raw.split(",") if e.strip()):
+    for entry in _allowed_entries():
         if entry.startswith("@") and email.endswith(entry):
             return True
         if email == entry:
