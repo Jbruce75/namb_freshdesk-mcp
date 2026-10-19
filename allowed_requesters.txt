@@ -1,0 +1,21 @@
+# Allowlist of requester emails the ticket-reply bot (kb.py) is permitted to
+# auto-reply to. One entry per line; blank lines and lines starting with #
+# are ignored. An entry starting with "@" allows a whole domain.
+#
+# The ALLOWED_REQUESTERS environment variable, if set, overrides this file
+# entirely (kept for backward compatibility / per-deployment overrides).
+
+jbruce@namb.net
+kguillen@namb.net
+aspivey@namb.net
+kpitt@namb.net
+smichel@namb.net
+bmoffatt@namb.net
+choupt@namb.net
+ccoogle@namb.net
+bceliz@namb.net
+griehl@namb.net
+ajames@namb.net
+wortiz@namb.net
+kberman@namb.net
+lhui@namb.net
